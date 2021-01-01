@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef } from "react";
-import app, { firestore, storage } from "../../firebase/firebase";
+import app, { firestore } from "../../firebase/firebase";
 import { AuthContext } from "../../components/Auth";
 import { Button } from "@material-ui/core";
 import { Avatar } from "@material-ui/core";
@@ -7,44 +7,23 @@ import Footer from "../../components/footer/Footer";
 import styled from "styled-components";
 import { CircularProgress } from "@material-ui/core";
 import Icon from "@material-ui/core/Icon";
-
+import UploadFile from "../../utils/UploadFile";
+ 
 function Account() {
   const { currentUser } = useContext(AuthContext); // get Current user information
   const [progress, setProgress] = useState(null);
   var upload = useRef();
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     if (e.target.files) {
       var file = e.target.files[0];
       if (file.type === "image/jpeg" || file.type === "image/png") {
-        var uploadTask = storage
-          .ref("account-photos")
-          .child(currentUser.id)
-          .put(file);
-        uploadTask.on(
-          "state_changed",
-          function (snapshot) {
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-            var progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setProgress(progress);
-          },
-          (error) => {
-            console.log(error);
-          },
-          () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-              firestore
-                .collection("users")
-                .doc(currentUser.id)
-                .update({ photoURL: downloadURL })
-                .then(() => window.location.reload());
-            });
-          }
-        );
+        var downloadURL = await UploadFile(currentUser,file,setProgress, "account-photos", currentUser.id);    
+        firestore
+        .collection("users")
+        .doc(currentUser.id)
+        .update({ photoURL: downloadURL })
+        .then(() => window.location.reload());
       }
     }
   };

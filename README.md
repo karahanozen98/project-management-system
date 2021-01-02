@@ -1,5 +1,5 @@
 This project is a online project management system wokring with real-time database.<br/>
-Firebase + React have been used.<br/>
+Firebase + React +TailwindCss have been used.<br/>
 .env content : <br/>
 REACT_APP_apiKey = <br/>
 REACT_APP_authDomain = <br/>

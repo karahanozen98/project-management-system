@@ -13,6 +13,10 @@ function TaskCard({ task, rest }) {
       <div className={task.isCompleted ? "completed" : "notcompleted"}>
         {task.isCompleted ? <p>Task completed ✅</p> : <p>Still Waiting...</p>}
       </div>
+      {task.attachedFile && <details>
+        <summary>{"Attached Files"}</summary>
+        <a href={task.attachedFile} rel="noreferrer"  target="_blank">{task.attachedFile.substring(0,25)+"..."}</a>
+      </details>}
       {rest && rest}
     </TaskCardWrapper>
   );
@@ -39,6 +43,9 @@ const TaskCardWrapper = styled.div`
   span {
     max-width: 100%;
     word-wrap: break-word;
+  }
+  a {
+    overflow:hidden;
   }
   .completed {
     color: #40ff00;

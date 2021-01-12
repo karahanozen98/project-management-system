@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { CircularProgress } from "@material-ui/core";
 import Icon from "@material-ui/core/Icon";
 import UploadFile from "../../utils/UploadFile";
- 
+
 function Account() {
   const { currentUser } = useContext(AuthContext); // get Current user information
   const [progress, setProgress] = useState(null);
@@ -18,12 +18,17 @@ function Account() {
     if (e.target.files) {
       var file = e.target.files[0];
       if (file.type === "image/jpeg" || file.type === "image/png") {
-        var downloadURL = await UploadFile(currentUser,file,setProgress, "account-photos", currentUser.id);    
+        var downloadURL = await UploadFile(
+          file,
+          setProgress,
+          "account-photos",
+          currentUser.id
+        );
         firestore
-        .collection("users")
-        .doc(currentUser.id)
-        .update({ photoURL: downloadURL })
-        .then(() => window.location.reload());
+          .collection("users")
+          .doc(currentUser.id)
+          .update({ photoURL: downloadURL })
+          .then(() => window.location.reload());
       }
     }
   };
@@ -33,7 +38,7 @@ function Account() {
       <AccountWrapper>
         <div className="account-info">
           {progress ? (
-            <CircularProgress variant="determinate" value={progress} /> 
+            <CircularProgress variant="determinate" value={progress} />
           ) : (
             <div className="account-avatar">
               <Avatar
@@ -96,8 +101,8 @@ const AccountWrapper = styled.div`
       left: 85%;
       top: 60%;
     }
-    span:hover{
-      font-size:1.4em;
+    span:hover {
+      font-size: 1.4em;
     }
   }
   .account-body {
